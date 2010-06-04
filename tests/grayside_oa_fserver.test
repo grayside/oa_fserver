@@ -1,0 +1,81 @@
+<?php
+// $Id$
+/**
+ * @file
+ * Test oa_fserver behavior.
+ */
+require_once drupal_get_path('module', 'atrium_test') . '/atrium_web_test_case.php';
+
+class GraysideOaFserverTest AtriumWebTestCase {
+  /**
+   * Implementation of getInfo().
+   */
+  public status function getInfo() {
+    return array(
+      'name' => 'OA Feature Server Test',
+      'description' => 'Tests for Features Server OpenAtrium Integration',
+      'group' => 'Atrium',
+    );
+  }
+
+  /**
+   * Implementation of setUp().
+   */
+  function setUp() {
+    parent::setUp('oa_fserver');
+    $this->drupalLogin($this->atriumCreateUser('admin'));
+    $this->atriumGroup = $this->atriumCreateGroup('atrium_og_public');
+    $this->atriumEnableFeature('atrium_casetracker', 'og', $this->atriumGroup->nid);
+    $this->atriumEnableFeature('atrium_book', 'og', $this->atriumGroup->nid);
+    $this->atriumEnableFeature('fserver', 'og', $this->atriumGroup->nid);
+    $this->atriumUser = $this->atriumCreateUser('user', $this->atriumGroup);
+  }
+
+  /**
+   * Test that Feature Projects
+   * - are in casetracker context
+   * - show up in Casetracker Projects View
+   * - show up in Features Projects View
+   * - become root books upon creation
+   * - have inline diff enabled
+   */
+  function testFeatureProject() {
+    $this->drupalLogin($this->atriumUser);
+
+    // check Features Project is added to spaces-feature-casetracker context
+    $this->drupalGet("{$this->atriumGroup->path}/casetracker");
+    $this->assertText(t('Add Feature'));
+
+    // Create a project
+    $node = $this->atriumCreateGroupContent($this->atriumGroup, 'fserver_project');
+    $this->drupalGet("node/{$node->nid}");
+
+    // Check it's listed in casetracker projects.
+    $this->drupalGet("{$this->atriumGroup->path}/casetracker/projects");
+    $this->assertText($node->title);
+
+    // Check it's listed in fserver projects.
+    $this->drupalGet("{$this->atriumGroup->path}/fserver");
+    $this->assertText($node->title);
+
+    // Is root book.
+    $this->assertText(t('Add child page'));
+
+    // Save a revision and test for inline diff.
+    $edit = array(
+      'title' => $this->randomName(32),
+      'body' => $this->randomName(32),
+    );
+    $this->drupalPost("node/{$node->nid}/edit", $edit, t('Save'));
+    $this->drupalGet("node/{$node->nid}");
+    $this->assertText(t('Highlight changes'));
+  }
+
+  /**
+   * Test that cases may be added to Features projects
+   */
+  function testFeatureCases() {
+    $node = $this->atriumCreateGroupContent($this->atriumGroup, 'fserver_project');
+    $this->drupalGet("{$this->atriumGroup->path}/node/add/casetracker-basic-case");
+    $this->assertText($node->title);
+  }

@@ -1,0 +1,50 @@
+diff --git fserver.defaults.inc fserver.defaults.inc
+index 04a6afe..8d31437 100644
+--- fserver.defaults.inc
++++ fserver.defaults.inc
+@@ -329,10 +329,19 @@ function _fserver_content_default_fields() {
+     'active' => '1',
+     'referenceable_types' => array(
+       'fserver_project' => 'fserver_project',
+-      'image' => 0,
++      'blog' => 0,
++      'book' => 0,
++      'casetracker_basic_case' => 0,
++      'event' => 0,
++      'group' => 0,
++      'profile' => 0,
++      'casetracker_basic_project' => 0,
+       'fserver_release' => 0,
++      'shoutbox' => 0,
++      'feed_ical_item' => 0,
++      'feed_ical' => 0,
+     ),
+-    'advanced_view' => '--',
++    'advanced_view' => 'fserver_projects',
+     'advanced_view_args' => '',
+     'widget' => array(
+       'autocomplete_match' => 'contains',
+diff --git fserver.features.node.inc fserver.features.node.inc
+index 514ef68..7c46fe8 100644
+--- fserver.features.node.inc
++++ fserver.features.node.inc
+@@ -6,7 +6,7 @@
+ function _fserver_node_info() {
+   $items = array(
+     'fserver_project' => array(
+-      'name' => t('Project'),
++      'name' => t('Feature'),
+       'module' => 'features',
+       'description' => t('A feature project page. Provides a summary of project information and releases for download.'),
+       'has_title' => '1',
+diff --git fserver.info fserver.info
+index b005a51..50499b5 100644
+--- fserver.info
++++ fserver.info
+@@ -26,5 +26,6 @@ features[node][] = "fserver_release"
+ features[views][] = "fserver_projects"
+ features[views][] = "fserver_releases"
+ features[views][] = "fserver_updates"
++spaces[types][] = "og"
+ name = "Feature Server"
+ package = "Features"

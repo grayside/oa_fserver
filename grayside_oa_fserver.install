@@ -1,0 +1,16 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ *  Installation of OA Fserver module.
+ */
+
+//  update system set weight='2' where name='grayside_oa_fserver'
+
+/**
+ * Implementation of hook_install().
+ */
+function grayside_oa_fserver_install() {
+  db_query("UPDATE {system} SET weight='2' WHERE name='grayside_oa_fserver'");
+}

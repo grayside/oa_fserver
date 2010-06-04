@@ -1,0 +1,139 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ *  Integrates the fserver feature with OpenAtrium.
+ */
+
+include_once('grayside_oa_fserver.features.inc');
+
+/**
+ * Implementation of hook_nodeapi().
+ */
+function grayside_oa_fserver_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
+  switch ($op) {
+    case 'view':
+      // Confirm we are actually on a page of relevance
+      if (menu_get_object() === $node) {
+        switch ($node->type) {
+          case 'fserver_project':
+            // Omit casetracker project summary -- not useful at the moment (may be one day...)
+            unset($node->content['casetracker_project_summary']);
+            break;
+        }
+      }
+      // Omit book-related links if the atrium_book feature is not available.
+      $space = spaces_get_space();
+      if (!$space->controllers->variable->values['space']['spaces_features']['atrium_book']) {
+        unset($node->book);
+      }     
+      break;
+  }
+}
+
+
+/**
+ * Implementation of hook_menu_alter().
+ */
+function grayside_oa_fserver_menu_alter(&$items) {
+//  $items['node/add/fserver-project']['title'] = t('Feature');
+  $items['fserver']['title'] = t('Features');
+}
+
+/**
+ * Implementation of hook_form_alter().
+ * Ensure Features projects become books.
+ */
+function grayside_oa_fserver_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id == 'spaces_features_form') {
+    $form['#submit'][] = 'grayside_oa_fserver_private_group_warning';
+  }
+  elseif (!empty($form['#node']) && !empty($form['book'])) {
+    switch ($form['#node']->type) {
+      case 'fserver_project':
+        if (!empty($form['#node']->nid) && isset($form['book']['bid']['#options'][$form['#node']->nid])) {
+	      $form['book']['bid']['#default_value'] = $form['#node']->nid;
+        }
+        else {
+	      $form['book']['bid']['#default_value'] = 'new';
+        }
+        $form['book']['#access'] = FALSE;
+        break;
+    }
+  }
+}
+
+/**
+ * Customize Features callback for private group warning.
+ */
+function grayside_oa_fserver_private_group_warning($form, &$form_state) {
+  $space = spaces_get_space();
+  if ($space->controllers->variable->values['preset']['spaces_og_private']
+    && $form_state['values']['spaces_features']['fserver']) {
+      drupal_set_message(t('Features hosted in a private group will not notify your Drupal site of updates.'), 'warning');
+  }
+}
+
+/**
+ * Implementation of hook_context_conditions_fetch_alter().
+ * Add Features to all the same contexts as casetracker projects.
+ * Compatible with context-6.x-3.0-beta3
+ */
+function grayside_oa_fserver_context_condition_fetch_alter(&$condition, $context) {
+  $book_context = context_load('atrium-casetracker-book');
+  $book_context->conditions['bookroot']['values']['fserver_project'] = 'fserver_project';
+  context_save($book_context);
+
+  $project_context = context_load('atrium-casetracker-project');
+  $project_context->conditions['node']['values']['fserver_project'] = 'fserver_project';
+  context_save($project_context);
+
+  $ct_context = context_load('spaces-feature-casetracker');
+  $ct_context->conditions['node']['values']['fserver_project'] = 'fserver_project';
+  context_save($ct_context);
+}
+
+/**
+ * Implementation of hook_context_load_alter().
+ * Add Features to all the same contexts as casetracker projects.
+ * Compatible with context-6.x-3.0-beta4
+ */
+function grayside_oa_fserver_context_load_alter(&$context) {
+  switch ($context->name) {
+    case 'atrium-casetracker-book':
+      $context->conditions['bookroot']['values']['fserver_project'] = 'fserver_project';
+      break;
+    case 'atrium-casetracker-project':
+    case 'spaces-feature-casetracker':
+      $context->conditions['node']['values']['fserver_project'] = 'fserver_project';
+      $context->conditions['node']['values']['fserver_project'] = 'fserver_project';
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_views_default_views_alter().
+ */ 
+function grayside_oa_fserver_views_default_views_alter(&$views) {
+  $views['fserver_projects']->display['default']->display_options['filters']['current'] = array(
+    'operator' => 'all',
+    'value' => '',
+    'group' => '0',
+    'exposed' => FALSE,
+    'expose' => array(
+      'operator' => FALSE,
+      'label' => '',
+    ),
+    'id' => 'current',
+    'table' => 'spaces',
+    'field' => 'current',
+    'relationship' => 'none',
+  );
+  $views['fserver_projects']->display['default']->display_options['access'] = array(
+    'type' => 'atrium_feature',
+    'spaces_feature' => 'fserver',
+    'perm' => 'access content',
+  );
+}
+
