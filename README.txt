@@ -14,8 +14,9 @@ This module provides integration between OpenAtrium and Features Server.
 1. Get the fserver feature from http://code.developmentseed.org.
   (drush dl --source=http://code.developmentseed.org/fserver dl fserver)
 2. Apply patch oa_fserver.patch from fserver/.
-3. Enable the fserver and grayside_oa_fserver modules.
-4. In any given group for which you want to publish Features, enable the Features Server 
+3. Follow the instructions in the post and first comment at https://community.openatrium.com/issues/node/2024
+4. Enable the grayside_oa_fserver modules.
+5. In any given group for which you want to publish Features, enable the Features Server 
 on the Customize Features page.
 
 ## Todos
