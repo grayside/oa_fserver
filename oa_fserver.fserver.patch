@@ -1,7 +1,7 @@
-diff --git fserver.defaults.inc fserver.defaults.inc
+diff --git a/fserver.defaults.inc b/fserver.defaults.inc
 index 04a6afe..8d31437 100644
---- fserver.defaults.inc
-+++ fserver.defaults.inc
+--- a/fserver.defaults.inc
++++ b/fserver.defaults.inc
 @@ -329,10 +329,19 @@ function _fserver_content_default_fields() {
      'active' => '1',
      'referenceable_types' => array(
@@ -24,10 +24,10 @@ index 04a6afe..8d31437 100644
      'advanced_view_args' => '',
      'widget' => array(
        'autocomplete_match' => 'contains',
-diff --git fserver.features.node.inc fserver.features.node.inc
+diff --git a/fserver.features.node.inc b/fserver.features.node.inc
 index 514ef68..7c46fe8 100644
---- fserver.features.node.inc
-+++ fserver.features.node.inc
+--- a/fserver.features.node.inc
++++ b/fserver.features.node.inc
 @@ -6,7 +6,7 @@
  function _fserver_node_info() {
    $items = array(
@@ -37,14 +37,21 @@ index 514ef68..7c46fe8 100644
        'module' => 'features',
        'description' => t('A feature project page. Provides a summary of project information and releases for download.'),
        'has_title' => '1',
-diff --git fserver.info fserver.info
-index b005a51..50499b5 100644
---- fserver.info
-+++ fserver.info
-@@ -26,5 +26,6 @@ features[node][] = "fserver_release"
+diff --git a/fserver.info b/fserver.info
+index b005a51..775b5ce 100644
+--- a/fserver.info
++++ b/fserver.info
+@@ -20,11 +20,11 @@ features[content][] = "fserver_release-field_fserver_versionextra"
+ features[content][] = "fserver_release-field_fserver_versionmajor"
+ features[content][] = "fserver_release-field_fserver_versionpatch"
+ features[context][] = "fserver-section-project"
+-features[menu][] = "fserver"
+ features[node][] = "fserver_project"
+ features[node][] = "fserver_release"
  features[views][] = "fserver_projects"
  features[views][] = "fserver_releases"
  features[views][] = "fserver_updates"
 +spaces[types][] = "og"
++spaces[types][] = "site"
  name = "Feature Server"
  package = "Features"
