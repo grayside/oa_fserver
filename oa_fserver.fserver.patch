@@ -38,10 +38,10 @@ index 514ef68..7c46fe8 100644
        'description' => t('A feature project page. Provides a summary of project information and releases for download.'),
        'has_title' => '1',
 diff --git a/fserver.info b/fserver.info
-index b005a51..08cebe2 100644
+index b005a51..775b5ce 100644
 --- a/fserver.info
 +++ b/fserver.info
-@@ -20,11 +20,12 @@ features[content][] = "fserver_release-field_fserver_versionextra"
+@@ -20,11 +20,11 @@ features[content][] = "fserver_release-field_fserver_versionextra"
  features[content][] = "fserver_release-field_fserver_versionmajor"
  features[content][] = "fserver_release-field_fserver_versionpatch"
  features[context][] = "fserver-section-project"
@@ -52,6 +52,5 @@ index b005a51..08cebe2 100644
  features[views][] = "fserver_releases"
  features[views][] = "fserver_updates"
 +spaces[types][] = "og"
-+spaces[types][] = "site"
  name = "Feature Server"
  package = "Features"
