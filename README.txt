@@ -18,6 +18,7 @@ This module provides integration between OpenAtrium and Features Server.
 4. Enable the grayside_oa_fserver modules.
 5. In any given group for which you want to publish Features, enable the Features Server 
 on the Customize Features page.
+6. (Optionally) Add fserver_project as an optional node type for field_referenced_book_pages on the Blog type.
 
 ## Todos
 

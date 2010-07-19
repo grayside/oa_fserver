@@ -44,7 +44,6 @@ function grayside_oa_fserver_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) 
  * Implementation of hook_menu_alter().
  */
 function grayside_oa_fserver_menu_alter(&$items) {
-//  $items['node/add/fserver-project']['title'] = t('Feature');
   $items['fserver']['title'] = t('Features');
 }
 
@@ -80,6 +79,28 @@ function grayside_oa_fserver_private_group_warning($form, &$form_state) {
     && $form_state['values']['spaces_features']['fserver']) {
       drupal_set_message(t('Features hosted in a private group will not notify your Drupal site of updates.'), 'warning');
   }
+}
+
+/**
+ * Implementation of hook_link().
+ */
+function grayside_oa_fserver_link($type, $object, $teaser = FALSE) {
+  $links = array();
+  if ($type == 'node' && $object->type == 'fserver_release') {
+    $links['fserver-project'] = array(
+      'title' => t('View Project'),
+      'href' => 'node/' . $object->field_fserver_project[0]['nid'],
+    );
+  }
+  return $links;
+}
+
+/**
+ * Implementation of hook_link_alter().
+ */
+function grayside_oa_fserver_link_alter(&$links, $node, $comment = NULL) {
+  // Pre-select the project to which you are adding a case.
+  $links['fserver-add-release']['query'] = 'edit[field_fserver_project][0][' . $node->nid . ']';
 }
 
 /**
