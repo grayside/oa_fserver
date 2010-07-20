@@ -20,7 +20,7 @@ index 04a6afe..8d31437 100644
 +      'feed_ical' => 0,
      ),
 -    'advanced_view' => '--',
-+    'advanced_view' => 'fserver_projects',
++    'advanced_view' => 'oa_fserver_project_options',
      'advanced_view_args' => '',
      'widget' => array(
        'autocomplete_match' => 'contains',
